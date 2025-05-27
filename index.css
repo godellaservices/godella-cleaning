@@ -1,0 +1,12 @@
+/* index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.input {
+  @apply w-full p-2 border border-gray-300 rounded mt-1;
+}
+
+body {
+  @apply bg-neutral-50 text-gray-900;
+}
