@@ -1,26 +1,22 @@
 import { useState } from 'react';
 import './index.css';
 import logo from './logo.png'; // Ensure this matches your actual image file name
+import { calculateQuote, discount as applyDiscount } from './quoteUtils.js';
 
 export default function App() {
   const [quote, setQuote] = useState(null);
   const [form, setForm] = useState({ rooms: '', squareFootage: '', cleaningType: '' });
 
-  const calculateQuote = () => {
-    const basePrice = 120;
+  const handleCalculate = () => {
     const rooms = parseInt(form.rooms || '0');
     const sqft = parseInt(form.squareFootage || '0');
     const type = form.cleaningType;
 
-    let price = basePrice;
-    if (rooms > 3) price += (rooms - 3) * 15;
-    if (sqft > 1200) price += ((sqft - 1200) / 100) * 5;
-    if (type === 'deep') price *= 1.5;
-
+    const price = calculateQuote({ rooms, squareFootage: sqft, cleaningType: type });
     setQuote(`One-time ${type === 'deep' ? 'Deep Clean' : 'Standard Clean'}: $${price.toFixed(2)}`);
   };
 
-  const discount = (rate) => quote ? `$${(parseFloat(quote.split('$')[1]) * rate).toFixed(2)}` : '$0.00';
+  const discount = (rate) => quote ? `$${applyDiscount(parseFloat(quote.split('$')[1]), rate).toFixed(2)}` : '$0.00';
 
   return (
     <div className="bg-neutral-50 min-h-screen text-gray-900">
@@ -39,7 +35,7 @@ export default function App() {
             <option value="standard">Standard Clean</option>
             <option value="deep">Deep Clean</option>
           </select><br />
-          <button onClick={calculateQuote} className="mt-4 bg-accent text-white px-4 py-2 rounded">Calculate</button>
+          <button onClick={handleCalculate} className="mt-4 bg-accent text-white px-4 py-2 rounded">Calculate</button>
           {quote && <p className="mt-4 text-white">{quote}</p>}
         </section>
 
